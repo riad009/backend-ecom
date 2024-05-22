@@ -95,6 +95,24 @@ const searchProduct = async (req: Request, res: Response) => {
   }
 };
 
+//search by email
+const searchByemail = async (req: Request, res: Response) => {
+  try {
+    const { searchTerm } = req.query;
+
+  console.log('searchTerm',searchTerm)
+    const result = await ProductServices.searchFromDB(searchTerm as string);
+
+    res.status(200).json({
+      success: true,
+      message: 'Product fetched succesfully  !',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 
 
 export const ProductControllers = {
@@ -103,7 +121,8 @@ export const ProductControllers = {
   getAllProducts,
   getSingleProduct,
   deleteProduct,
-  searchProduct
+  searchProduct,
+  searchByemail
   
   
 };

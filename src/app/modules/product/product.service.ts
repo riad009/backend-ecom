@@ -40,6 +40,17 @@ const searchFromDB = async (name: string) => {
   return result;
 };
 
+//search by order email
+const searchByEmailIntoDb = async (name: string) => {
+  // Constructing a regular expression to perform a case-insensitive partial match
+  const regex = new RegExp(name, 'i');
+  
+  // Querying the database using the regular expression
+  const result = await ProductModel.findOne({ name: { $regex: regex } });
+    console.log('result',result)
+  return result;
+};
+
 
 export const ProductServices = {
 
@@ -48,4 +59,5 @@ export const ProductServices = {
   getSingleProductIntoDB,
   deleteProductFromDB,
   searchFromDB,
+  searchByEmailIntoDb,
 };
