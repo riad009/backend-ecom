@@ -11,7 +11,7 @@ router.delete('/:productId', ProductControllers.deleteProduct);
 
 router.get('/', ProductControllers.searchProduct);
 
-router.get('/orders/email', ProductControllers.searchByemail);
+router.get('/orders', ProductControllers.searchByemail);
 
 
 
