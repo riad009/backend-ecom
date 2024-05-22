@@ -28,11 +28,24 @@ const deleteProductFromDB = async (_id: string) => {
   return result;
 };
 
+//search
+
+const searchFromDB = async (name: string) => {
+  // Constructing a regular expression to perform a case-insensitive partial match
+  const regex = new RegExp(name, 'i');
+  
+  // Querying the database using the regular expression
+  const result = await ProductModel.findOne({ name: { $regex: regex } });
+    console.log('result',result)
+  return result;
+};
+
 
 export const ProductServices = {
 
   createProductIntoDB,
   getAllProductsIntoDB,
   getSingleProductIntoDB,
-  deleteProductFromDB
+  deleteProductFromDB,
+  searchFromDB,
 };

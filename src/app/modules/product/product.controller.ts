@@ -41,21 +41,6 @@ const getAllProducts = async (req: Request, res: Response) => {
 };
 
 
-const getSingleProduct = async (req: Request, res: Response) => {
-  try {
-    const { productId } = req.params;
-    const result = await ProductServices.getSingleProductIntoDB(productId);
-
-    res.status(200).json({
-      success: true,
-      message: 'Product fetched succesfully  !',
-      data: result,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 
 // delete
 const deleteProduct = async (req: Request, res: Response) => {
@@ -75,12 +60,50 @@ const deleteProduct = async (req: Request, res: Response) => {
 
 
 
+const getSingleProduct = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const result = await ProductServices.getSingleProductIntoDB(productId);
+
+    res.status(200).json({
+      success: true,
+      message: 'Product fetched succesfully  !',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+//search
+const searchProduct = async (req: Request, res: Response) => {
+  try {
+    const { searchTerm } = req.query;
+
+  console.log('searchTerm',searchTerm)
+    const result = await ProductServices.searchFromDB(searchTerm as string);
+
+    res.status(200).json({
+      success: true,
+      message: 'Product fetched succesfully  !',
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
 export const ProductControllers = {
 
   createProduct,
   getAllProducts,
   getSingleProduct,
-  deleteProduct
+  deleteProduct,
+  searchProduct
   
   
 };
