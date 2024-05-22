@@ -9,7 +9,7 @@ router.get('/get-product', ProductControllers.getAllProducts);
 router.get('/:productId', ProductControllers.getSingleProduct);
 router.delete('/:productId', ProductControllers.deleteProduct);
 
-router.get('/ss', ProductControllers.searchProduct);
+router.get('/email', ProductControllers.searchProduct);
 
 router.get('/orders/', ProductControllers.searchByemail);
 
