@@ -1,12 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { z } from 'zod';
+import {   z } from 'zod';
 import { Product } from './product/product.interface';
 
 // Mongoose schema for MongoDB
 const variantMongooseSchema = new Schema({
-  size: { type: Number, required: true },
-  color: { type: String, required: true },
-  style: { type: String, required: true }
+  type: { type: String, required: true },
+  value: { type: String, required: true }
 });
 
 const inventoryMongooseSchema = new Schema({
@@ -29,9 +28,8 @@ export const ProductModel = model<Product>('Product', productMongooseSchema);
 
 // Zod schema for validation
 const variantZodSchema = z.object({
-  size: z.number(),
-  color: z.string(),
-  style: z.string()
+  type: z.string(),
+  value: z.string()
 });
 
 const inventoryZodSchema = z.object({
@@ -46,20 +44,8 @@ const productZodSchema = z.object({
   category: z.string(),
   tags: z.array(z.string()),
   variants: z.array(variantZodSchema),
-  inventory: inventoryZodSchema,
-  isDeleted: z.boolean().default(false)
+  inventory: inventoryZodSchema
 });
 
 export { productZodSchema };
 
-// Example usage for Zod validation
-// const validatedProduct = productZodSchema.parse({
-//   name: "Sample Product",
-//   description: "This is a sample product",
-//   price: 19.99,
-//   category: "Sample Category",
-//   tags: ["tag1", "tag2"],
-//   variants: [{ size: 42, color: "blue", style: "casual" }],
-//   inventory: { quantity: 100, inStock: true },
-//   isDeleted: false
-// });

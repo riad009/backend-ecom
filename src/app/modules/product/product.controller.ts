@@ -8,7 +8,8 @@ const createProduct = async (req: Request, res: Response) => {
   try {
 
     //must have product outer object  { "product": {....}  }
-    const { product: productData } = req.body;
+     const productData = req.body;
+    // const { product: productData } = req.body;
     const result = await ProductServices.createProductIntoDB(productData);
 
     // accept any of data {...}
@@ -26,17 +27,32 @@ const createProduct = async (req: Request, res: Response) => {
 };
 
 
-
-const getAllProducts = async (req: Request, res: Response) => {
+export const getProducts = async (req: Request, res: Response) => {
   try {
-    const result = await ProductServices.getAllProductsIntoDB();
+    const { searchTerm } = req.query;
+    let result;
+
+    if (searchTerm) {
+      // If searchTerm is provided, perform search
+      console.log('searchTerm', searchTerm);
+      result = await ProductServices.getProductsFromDB(searchTerm as string);
+    } else {
+      // If no searchTerm is provided, fetch all products
+      result = await ProductServices.getProductsFromDB();
+    }
+
     res.status(200).json({
       success: true,
-      message: 'Products fetched succesfully !',
+      message: 'Products fetched successfully!',
       data: result,
     });
   } catch (error) {
     console.log(error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error.',
+      data: null,
+    });
   }
 };
 
@@ -51,13 +67,12 @@ const deleteProduct = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Product is deleted succesfully  !',
-      data: result,
+      data: null,
     });
   } catch (error) {
     console.log(error);
   }
 };
-
 
 
 const getSingleProduct = async (req: Request, res: Response) => {
@@ -65,64 +80,102 @@ const getSingleProduct = async (req: Request, res: Response) => {
     const { productId } = req.params;
     const result = await ProductServices.getSingleProductIntoDB(productId);
 
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
     res.status(200).json({
       success: true,
-      message: 'Product fetched succesfully  !',
+      message: 'Product fetched successfully!',
       data: result,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching the product',
+    });
   }
 };
 
 
 
-//search
-const searchProduct = async (req: Request, res: Response) => {
+const updateProduct = async (req: Request, res: Response) => {
   try {
-    const { searchTerm } = req.query;
+    const { productId } = req.params;
+    const productData = req.body;
+    
+    const updatedProduct = await ProductServices.updateProductInDB(productId, productData);
 
-  console.log('searchTerm',searchTerm)
-    const result = await ProductServices.searchFromDB(searchTerm as string);
+    if (!updatedProduct) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found!',
+      });
+    }
 
     res.status(200).json({
       success: true,
-      message: 'Product fetched succesfully  !',
-      data: result,
+      message: 'Product updated successfully!',
+      data: updatedProduct,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while updating the product.',
+    });
   }
 };
 
 //search by email
-const searchByemail = async (req: Request, res: Response) => {
-  try {
-    const { searchTerm } = req.query;
+// const searchByemail = async (req: Request, res: Response) => {
+//   try {
+//     const { searchTerm } = req.query;
 
-  console.log('searchTerm',searchTerm)
-    const result = await ProductServices.searchFromDB(searchTerm as string);
+//     console.log('searchTerm', searchTerm);
+//     const result = await ProductServices.searchByEmailIntoDb(searchTerm as string);
 
-    res.status(200).json({
-      success: true,
-      message: 'Product fetched succesfully  !',
-      data: result,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+//     if (!result) {
+//       // Data not found
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Product not found.',
+//         data: null,
+//       });
+//     }
+
+//     // Data found
+//     res.status(200).json({
+//       success: true,
+//       message: 'Product fetched successfully!',
+//       data: result,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     // Handle other errors
+//     res.status(500).json({
+//       success: false,
+//       message: 'Internal server error.',
+//       data: null,
+//     });
+//   }
+// };
 
 
 
 export const ProductControllers = {
 
   createProduct,
-  getAllProducts,
+ 
   getSingleProduct,
   deleteProduct,
-  searchProduct,
-  searchByemail
+  getProducts,
+  updateProduct
+
   
   
 };
